@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/createpage.dart';
+import 'package:flutter_crud/readpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,7 +39,10 @@ class _HomePageState extends State<HomePage> {
                     label: Text("Create")),
                 Padding(padding: EdgeInsets.only(top: 20)),
                 ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (_) => ReadPage()));
+                    },
                     icon: Icon(Icons.read_more_rounded),
                     label: Text("Read")),
                 Padding(padding: EdgeInsets.only(top: 20)),

@@ -154,8 +154,8 @@ class _CreatePageState extends State<CreatePage> {
                   ElevatedButton(
                       onPressed: () {
                         var data = {
-                          "firstName": firstNameController.text,
-                          "lastName": lastnameController.text,
+                          "firstname": firstNameController.text,
+                          "lastname": lastnameController.text,
                           "year": yearController.text,
                           "course": selectedCourse,
                           "enrolled": isEnrolled,

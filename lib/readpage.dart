@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/model/student_model.dart';
 import 'package:flutter_crud/services/api.dart';
+import 'package:flutter_crud/updatepage.dart';
 
 class ReadPage extends StatefulWidget {
   const ReadPage({super.key});
@@ -65,19 +66,41 @@ class _ReadPageState extends State<ReadPage> {
                 return ListView.builder(
                   itemCount: sdata.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      leading: Icon(Icons.person_2_rounded, size: 35),
-                      title: Text("First Name: ${sdata[index].firstname}"),
-                      subtitle: Text("Last Name: ${sdata[index].lastname}"),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Course: ${sdata[index].course}"),
-                          Text("Year: ${sdata[index].year}"),
-                          Text(
-                              "Enrolled: ${sdata[index].enrolled == true ? 'Yes' : 'No'}"),
-                        ],
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Updatepage(student: sdata[index]),
+                          ),
+                        ).then((updatedData) {
+                          if (updatedData != null) {
+                            setState(() {
+                              studentsFuture = Api.getPerson();
+                            });
+                          }
+                        });
+                      },
+                      child: Card(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        elevation: 5,
+                        child: ListTile(
+                          leading: Icon(Icons.person_2_rounded, size: 35),
+                          title: Text("First Name: ${sdata[index].firstname}"),
+                          subtitle: Text("Last Name: ${sdata[index].lastname}"),
+                          trailing: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Course: ${sdata[index].course}"),
+                              Text("Year: ${sdata[index].year}"),
+                              Text(
+                                  "Enrolled: ${sdata[index].enrolled == true ? 'Yes' : 'No'}"),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },

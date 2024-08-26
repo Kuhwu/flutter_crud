@@ -82,6 +82,7 @@ class _CreatePageState extends State<CreatePage> {
                         'BSED',
                         'BSARCH',
                         'BSCRIM',
+                        'BSHM'
                       ].map((String year) {
                         return DropdownMenuItem<String>(
                           value: year,
@@ -152,18 +153,20 @@ class _CreatePageState extends State<CreatePage> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 20)),
                   ElevatedButton(
-                      onPressed: () {
-                        var data = {
-                          "firstname": firstNameController.text,
-                          "lastname": lastnameController.text,
-                          "year": yearController.text,
-                          "course": selectedCourse,
-                          "enrolled": isEnrolled,
-                        };
+                    onPressed: () {
+                      var data = {
+                        "firstname": firstNameController.text,
+                        "lastname": lastnameController.text,
+                        "year": yearController.text,
+                        "course": selectedCourse,
+                        "enrolled": isEnrolled
+                            .toString(),
+                      };
 
-                        Api.addStudent(data);
-                      },
-                      child: Text("Submit")),
+                      Api.addStudent(data);
+                    },
+                    child: Text("Submit"),
+                  )
                 ],
               ),
             ),

@@ -46,16 +46,6 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.read_more_rounded),
                     label: Text("Read")),
                 Padding(padding: EdgeInsets.only(top: 20)),
-                ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.update),
-                    label: Text("Update")),
-                Padding(padding: EdgeInsets.only(top: 20)),
-                ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.delete),
-                    label: Text("Delete")),
-                Padding(padding: EdgeInsets.only(top: 20)),
               ],
             ),
           )

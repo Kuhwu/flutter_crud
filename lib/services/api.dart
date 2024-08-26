@@ -6,10 +6,9 @@ import 'package:http/http.dart' as http;
 class Api {
   static const baseUrl = "http://192.168.0.9:3000/api/";
 
-  // POST API - Add Student
+  // POST API
   static Future<void> addStudent(Map<String, dynamic> sdata) async {
-    sdata['enrolled'] =
-        sdata['enrolled'].toString();
+    sdata['enrolled'] = sdata['enrolled'].toString();
 
     var url = Uri.parse(baseUrl + "add_student");
 
@@ -20,17 +19,17 @@ class Api {
         body: jsonEncode(sdata),
       );
       if (res.statusCode == 200) {
-        var data = jsonDecode(res.body.toString());
+        var data = jsonDecode(res.body);
         print('Student added: $data');
       } else {
         print("Upload Failed: ${res.body}");
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error adding student: ${e.toString()}');
     }
   }
 
-  // GET API - Get Students
+  // GET API
   static Future<List<Student>> getPerson() async {
     List<Student> students = [];
 
@@ -41,7 +40,7 @@ class Api {
       print('GET Response: ${res.body}');
 
       if (res.statusCode == 200) {
-        var data = jsonDecode(res.body.toString());
+        var data = jsonDecode(res.body);
         print('Decoded Response: $data');
 
         if (data['students'] != null) {
@@ -53,7 +52,7 @@ class Api {
         print("Failed to fetch students: ${res.body}");
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error fetching students: ${e.toString()}');
     }
 
     return students;
@@ -62,7 +61,8 @@ class Api {
   // PUT API - Update Student
   static Future<void> updateStudent(
       int id, Map<String, dynamic> updatedData) async {
-    updatedData['enrolled'] = updatedData['enrolled'].toString();
+    updatedData['enrolled'] = updatedData['enrolled']
+        .toString();
 
     var url = Uri.parse(baseUrl + "update_student/$id");
 
@@ -73,13 +73,33 @@ class Api {
         body: jsonEncode(updatedData),
       );
       if (res.statusCode == 200) {
-        var data = jsonDecode(res.body.toString());
+        var data = jsonDecode(res.body);
         print('Update Response: $data');
       } else {
         print("Update Failed: ${res.body}");
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error updating student: ${e.toString()}');
+    }
+  }
+
+  // DELETE API 
+  static Future<void> deleteStudent(int id) async {
+    var url = Uri.parse(baseUrl + "delete_student/$id");
+
+    try {
+      final res = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (res.statusCode == 200) {
+        var data = jsonDecode(res.body);
+        print('Delete Response: $data');
+      } else {
+        print("Delete Failed: ${res.body}");
+      }
+    } catch (e) {
+      debugPrint('Error deleting student: ${e.toString()}');
     }
   }
 }

@@ -60,7 +60,6 @@ class _UpdatepageState extends State<Updatepage> {
         'enrolled': _enrolled,
       };
 
-      // Call the API to update the student
       Api.updateStudent(widget.student.id, updatedData).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Student updated successfully")),
@@ -73,6 +72,20 @@ class _UpdatepageState extends State<Updatepage> {
         );
       });
     }
+  }
+
+  void _deleteStudent() {
+    Api.deleteStudent(widget.student.id).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Student deleted successfully")),
+      );
+
+      Navigator.pop(context, null);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete student: $error")),
+      );
+    });
   }
 
   @override
@@ -109,19 +122,20 @@ class _UpdatepageState extends State<Updatepage> {
                 },
               ),
               DropdownButtonFormField<String>(
-                  value: _selectedCourse,
-                  decoration: InputDecoration(labelText: 'Course'),
-                  items: _courses.map((course) {
-                    return DropdownMenuItem(
-                      value: course,
-                      child: Text(course),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCourse = value!;
-                    });
-                  }),
+                value: _selectedCourse,
+                decoration: InputDecoration(labelText: 'Course'),
+                items: _courses.map((course) {
+                  return DropdownMenuItem(
+                    value: course,
+                    child: Text(course),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCourse = value!;
+                  });
+                },
+              ),
               TextFormField(
                 controller: _yearController,
                 decoration: InputDecoration(labelText: 'Year'),
@@ -142,9 +156,21 @@ class _UpdatepageState extends State<Updatepage> {
                 },
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateStudent,
-                child: Text('Update Student'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: _updateStudent,
+                    child: Text('Update Student'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _deleteStudent,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: Text('Delete Student'),
+                  ),
+                ],
               ),
             ],
           ),

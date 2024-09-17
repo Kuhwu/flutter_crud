@@ -12,33 +12,35 @@ class Updatepage extends StatefulWidget {
 }
 
 class _UpdatepageState extends State<Updatepage> {
+  late Future<List<Student>> studentsFuture;
+
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _firstnameController;
   late TextEditingController _lastnameController;
-  late String _selectedCourse;
-  late TextEditingController _yearController;
+  late TextEditingController _courseController;
+  late String _selectedYear;
   late bool _enrolled;
 
-  final List<String> _courses = [
-    'BSCE',
-    'BSIT',
-    'BSBA',
-    'BSED',
-    'BSARCH',
-    'BSCRIM',
-    'BSHM'
+  final List<String> _year = [
+    'First Year',
+    'Second Year',
+    'Third Year',
+    'Fourth Year',
   ];
 
   @override
   void initState() {
     super.initState();
 
+    studentsFuture = Api.getPerson();
+
     _firstnameController =
         TextEditingController(text: widget.student.firstname);
     _lastnameController = TextEditingController(text: widget.student.lastname);
-    _selectedCourse = widget.student.course;
-    _yearController = TextEditingController(text: widget.student.year);
+    _selectedYear = widget.student.year;
+    _courseController = TextEditingController(
+        text: widget.student.course.toString());
     _enrolled = widget.student.enrolled ?? false;
   }
 
@@ -46,46 +48,73 @@ class _UpdatepageState extends State<Updatepage> {
   void dispose() {
     _firstnameController.dispose();
     _lastnameController.dispose();
-    _yearController.dispose();
+    _courseController.dispose();
     super.dispose();
   }
 
-  void _updateStudent() {
-    if (_formKey.currentState!.validate()) {
-      Map<String, dynamic> updatedData = {
-        'firstname': _firstnameController.text,
-        'lastname': _lastnameController.text,
-        'course': _selectedCourse,
-        'year': _yearController.text,
-        'enrolled': _enrolled,
-      };
+void _updateStudent() {
+  if (_formKey.currentState!.validate()) {
+    Map<String, dynamic> updatedData = {
+      'firstname': _firstnameController.text,
+      'lastname': _lastnameController.text,
+      'course': _courseController.text,        
+      'year': _selectedYear,
+      'enrolled': _enrolled,
+    };
 
-      Api.updateStudent(widget.student.id, updatedData).then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Student updated successfully")),
-        );
-
-        Navigator.pop(context, updatedData);
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update student: $error")),
-        );
-      });
-    }
-  }
-
-  void _deleteStudent() {
-    Api.deleteStudent(widget.student.id).then((_) {
+    Api.updateStudent(widget.student.id, updatedData).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Student deleted successfully")),
+        SnackBar(content: Text("Student updated successfully")),
       );
 
-      Navigator.pop(context, null);
+      Navigator.pop(context, true);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to delete student: $error")),
+        SnackBar(content: Text("Failed to update student: $error")),
       );
     });
+  }
+}
+
+
+  void _deleteStudent(String studentId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Confirmation"),
+          content: Text("Are you sure you want to delete this student?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Delete"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Api.deleteStudent(studentId).then((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Student deleted successfully!'),
+                    ),
+                  );
+                  Navigator.pop(context, true);
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to delete student: $error'),
+                    ),
+                  );
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -122,26 +151,26 @@ class _UpdatepageState extends State<Updatepage> {
                 },
               ),
               DropdownButtonFormField<String>(
-                value: _selectedCourse,
-                decoration: InputDecoration(labelText: 'Course'),
-                items: _courses.map((course) {
+                value: _selectedYear,
+                decoration: InputDecoration(labelText: 'Year'),
+                items: _year.map((year) {
                   return DropdownMenuItem(
-                    value: course,
-                    child: Text(course),
+                    value: year,
+                    child: Text(year),
                   );
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _selectedCourse = value!;
+                    _selectedYear = value!;
                   });
                 },
               ),
               TextFormField(
-                controller: _yearController,
-                decoration: InputDecoration(labelText: 'Year'),
+                controller: _courseController,
+                decoration: InputDecoration(labelText: 'Course'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the year';
+                    return 'Please enter the course';
                   }
                   return null;
                 },
@@ -164,7 +193,10 @@ class _UpdatepageState extends State<Updatepage> {
                     child: Text('Update Student'),
                   ),
                   ElevatedButton(
-                    onPressed: _deleteStudent,
+                    onPressed: () {
+                      _deleteStudent(
+                          widget.student.id); // Pass the student ID here
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                     ),

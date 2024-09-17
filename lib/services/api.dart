@@ -44,9 +44,10 @@ class Api {
         print('Decoded Response: $data');
 
         if (data['students'] != null) {
-          data['students'].forEach((element) {
+          for (var element in data['students']) {
+            print('Student element: $element'); // Debug print
             students.add(Student.fromJson(element));
-          });
+          }
         }
       } else {
         print("Failed to fetch students: ${res.body}");
@@ -60,9 +61,8 @@ class Api {
 
   // PUT API - Update Student
   static Future<void> updateStudent(
-      int id, Map<String, dynamic> updatedData) async {
-    updatedData['enrolled'] = updatedData['enrolled']
-        .toString();
+      String id, Map<String, dynamic> updatedData) async {
+    updatedData['enrolled'] = updatedData['enrolled'].toString();
 
     var url = Uri.parse(baseUrl + "update_student/$id");
 
@@ -83,8 +83,7 @@ class Api {
     }
   }
 
-  // DELETE API 
-  static Future<void> deleteStudent(int id) async {
+  static Future<void> deleteStudent(String id) async {
     var url = Uri.parse(baseUrl + "delete_student/$id");
 
     try {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crud/homepage.dart';
+import 'package:flutter_crud/readpage.dart';
+
+//import 'package:flutter_crud/homepage.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CRUD',
       theme: ThemeData.dark(),
-      home: const HomePage(),
+      home: const ReadPage(),
     );
   }
 }

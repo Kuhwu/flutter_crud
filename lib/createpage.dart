@@ -10,167 +10,126 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   bool isEnrolled = false;
+  final _formKey = GlobalKey<FormState>();
 
   var firstNameController = TextEditingController();
   var lastnameController = TextEditingController();
-  var yearController = TextEditingController();
-  String? selectedCourse;
-  //var enrolledController = TextEditingController();
+  var courseController = TextEditingController();
+  String? selectedYear;
+
+  final List<String> _years = [
+    'First Year',
+    'Second Year',
+    'Third Year',
+    'Fourth Year',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Colors.blueAccent, Colors.greenAccent])),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(color: Colors.white54),
-            ),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 70, right: 70),
-                    child: TextField(
-                      controller: firstNameController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'First Name',
-                        hintStyle: TextStyle(color: Colors.black),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 70, right: 70),
-                    child: TextField(
-                      controller: lastnameController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'Last Name',
-                        hintStyle: TextStyle(color: Colors.black),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 70, right: 70),
-                    child: DropdownButtonFormField<String>(
-                      value: selectedCourse,
-                      items: <String>[
-                        'BSCE',
-                        'BSIT',
-                        'BSBA',
-                        'BSED',
-                        'BSARCH',
-                        'BSCRIM',
-                        'BSHM'
-                      ].map((String year) {
-                        return DropdownMenuItem<String>(
-                          value: year,
-                          child: Text(
-                            year,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        );
-                      }).toList(),
-                      decoration: InputDecoration(
-                        hintText: 'Course',
-                        hintStyle: TextStyle(color: Colors.black),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                      dropdownColor: Colors.white,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedCourse = newValue;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 70, right: 70),
-                    child: TextField(
-                      controller: yearController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'Year',
-                        hintStyle: TextStyle(color: Colors.black),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 70, right: 70),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Enrolled',
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        ),
-                        Switch(
-                          value: isEnrolled,
-                          onChanged: (bool value) {
-                            setState(() {
-                              isEnrolled = value;
-                            });
-                          },
-                          activeColor: Colors.black,
-                          activeTrackColor: Colors.green.shade400,
-                          inactiveThumbColor: Colors.black,
-                          inactiveTrackColor: Colors.red.shade400,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 20)),
-                  ElevatedButton(
-                    onPressed: () {
-                      var data = {
-                        "firstname": firstNameController.text,
-                        "lastname": lastnameController.text,
-                        "year": yearController.text,
-                        "course": selectedCourse,
-                        "enrolled": isEnrolled
-                            .toString(),
-                      };
-
-                      Api.addStudent(data);
-                    },
-                    child: Text("Submit"),
-                  )
-                ],
+      appBar: AppBar(
+        title: Text('Add New Student'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                controller: firstNameController,
+                decoration: InputDecoration(labelText: 'First Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a first name';
+                  }
+                  return null;
+                },
               ),
-            ),
-          ],
+              TextFormField(
+                controller: lastnameController,
+                decoration: InputDecoration(labelText: 'Last Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a last name';
+                  }
+                  return null;
+                },
+              ),
+              DropdownButtonFormField<String>(
+                value: selectedYear,
+                decoration: InputDecoration(labelText: 'Year'),
+                items: _years.map((year) {
+                  return DropdownMenuItem(
+                    value: year,
+                    child: Text(year),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedYear = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a year';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: courseController,
+                decoration: InputDecoration(labelText: 'Course'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the course';
+                  }
+                  return null;
+                },
+              ),
+              SwitchListTile(
+                title: Text('Enrolled'),
+                value: isEnrolled,
+                onChanged: (bool value) {
+                  setState(() {
+                    isEnrolled = value;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    var data = {
+                      "firstname": firstNameController.text,
+                      "lastname": lastnameController.text,
+                      "course": courseController.text,
+                      "year": selectedYear,
+                      "enrolled": isEnrolled.toString(),
+                    };
+
+                    Api.addStudent(data).then((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Student added successfully")),
+                      );
+                      firstNameController.clear();
+                      lastnameController.clear();
+                      courseController.clear();
+                      setState(() {
+                        selectedYear = null;
+                        isEnrolled = false;
+                      });
+                    }).catchError((error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Failed to add student: $error")),
+                      );
+                    });
+                  }
+                },
+                child: Text("Submit"),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 class Student {
-  int id;
+  String id;
   String firstname;
   String lastname;
   String course;
@@ -17,23 +17,23 @@ class Student {
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      id: json['id'],
+      id: json['_id'], // Updated to _id
       firstname: json['firstname'],
       lastname: json['lastname'],
       course: json['course'],
       year: json['year'],
-      enrolled: json['enrolled'] == 'true',
+      enrolled: json['enrolled'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'firstname': firstname,
       'lastname': lastname,
       'course': course,
       'year': year,
-      'enrolled': enrolled.toString(),
+      'enrolled': enrolled,
     };
   }
 }

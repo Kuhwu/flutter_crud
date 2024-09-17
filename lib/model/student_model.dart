@@ -4,7 +4,7 @@ class Student {
   String lastname;
   String course;
   String year;
-  bool? enrolled;
+  bool enrolled;
 
   Student({
     required this.id,
@@ -12,12 +12,12 @@ class Student {
     required this.lastname,
     required this.course,
     required this.year,
-    this.enrolled,
+    required this.enrolled,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      id: json['_id'], // Updated to _id
+      id: json['_id'],
       firstname: json['firstname'],
       lastname: json['lastname'],
       course: json['course'],

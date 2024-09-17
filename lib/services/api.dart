@@ -4,7 +4,7 @@ import 'package:flutter_crud/model/student_model.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
-  static const baseUrl = "http://192.168.0.9:3000/api/";
+  static const baseUrl = "https://server-crud-eta.vercel.app/api/";
 
   // POST API
   static Future<void> addStudent(Map<String, dynamic> sdata) async {
@@ -30,38 +30,35 @@ class Api {
   }
 
   // GET API
-  static Future<List<Student>> getPerson() async {
-    List<Student> students = [];
+static Future<List<Student>> getPerson() async {
+  List<Student> students = [];
 
-    var url = Uri.parse(baseUrl + "get_student");
+  var url = Uri.parse(baseUrl + "get_student");
 
-    try {
-      final res = await http.get(url);
-      print('GET Response: ${res.body}');
+  try {
+    final res = await http.get(url);
+    print('GET Response: ${res.body}');
 
-      if (res.statusCode == 200) {
-        var data = jsonDecode(res.body);
-        print('Decoded Response: $data');
+    if (res.statusCode == 200) {
+      var data = jsonDecode(res.body);
+      print('Decoded Response: $data');
 
-        if (data['students'] != null) {
-          for (var element in data['students']) {
-            print('Student element: $element'); // Debug print
-            students.add(Student.fromJson(element));
-          }
+      if (data['students'] != null) {
+        for (var element in data['students']) {
+          students.add(Student.fromJson(element));
         }
-      } else {
-        print("Failed to fetch students: ${res.body}");
       }
-    } catch (e) {
-      debugPrint('Error fetching students: ${e.toString()}');
+    } else {
+      print("Failed to fetch students: ${res.body}");
     }
-
-    return students;
+  } catch (e) {
+    debugPrint('Error fetching students: ${e.toString()}');
   }
 
+  return students;
+}
   // PUT API - Update Student
-  static Future<void> updateStudent(
-      String id, Map<String, dynamic> updatedData) async {
+  static Future<void> updateStudent(String id, Map<String, dynamic> updatedData) async {
     updatedData['enrolled'] = updatedData['enrolled'].toString();
 
     var url = Uri.parse(baseUrl + "update_student/$id");
